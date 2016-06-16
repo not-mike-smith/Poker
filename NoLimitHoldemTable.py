@@ -35,7 +35,7 @@ class NoLimitHoldemTable(PokerTable):
 
     def play(self):
         for player in self._betting_players:
-            player.make_bet_action([act for act in BetAction])
+            player.make_bet_action([act for act in BetAction])  # TODO: fix this
         if self._last_player_to_raise is self._betting_players[-1]:
             for player in self._betting_players:
                 player.make_bet_action([BetAction.Fold, BetAction.Call])
