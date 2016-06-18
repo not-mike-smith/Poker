@@ -2,9 +2,9 @@ from PokerTable import PokerTable
 from BetAction import BetAction
 
 
-class NoLimitHoldemTable(PokerTable):
+class TexasHoldemTable(PokerTable):
     def __init__(self, limit=None, players=None, ante=None, big_blind=0, small_blind=None):
-        super(NoLimitHoldemTable, self).__init__(limit, players, ante)
+        super(TexasHoldemTable, self).__init__(players, limit, ante)
         self._big_blind = big_blind
         if small_blind is None:
             small_blind = big_blind // 2
@@ -24,7 +24,7 @@ class NoLimitHoldemTable(PokerTable):
         return self._table_cards.copy()
 
     def _ante_up(self):
-        super(NoLimitHoldemTable, self)._ante_up()
+        super(TexasHoldemTable, self)._ante_up()
         self._collect_bet(self._betting_players[-2], self._small_blind)
         self._collect_bet(self._betting_players[-1], self._big_blind)
         self._max_bet += self._big_blind
@@ -34,6 +34,7 @@ class NoLimitHoldemTable(PokerTable):
             player.take_cards(self._deck.multi_deal(2))
 
     def play(self):
+        self._ante_up()
         for player in self._betting_players:
             player.make_bet_action([act for act in BetAction])  # TODO: fix this
         if self._last_player_to_raise is self._betting_players[-1]:

@@ -54,7 +54,10 @@ class PokerPot(object):
                 amount -= sub_amount
                 if amount == 0:
                     return
-        self._subpots[-1].bets[player] += amount
+        try:
+            self._subpots[-1].bets[player] += amount
+        except KeyError:
+            self._subpots[-1].bets[player] = amount
 
     def all_in(self, broke_player):
         self._subpots.append(self._subpots[-1].create_side_pot(broke_player))

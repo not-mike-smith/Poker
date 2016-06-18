@@ -9,9 +9,16 @@ class PokerPlayer(object):
         self._stack = 0
         self.table = None
 
+    def __repr__(self):
+        return self.name + ' has ' + str(self._stack) + ' chips'
+
     @property
     def best_hand(self):
         raise Exception('Must be overridden')
+
+    @property
+    def stack(self):
+        return self._stack
 
     def take_cards(self, cards):
         self._cards.extend(cards)

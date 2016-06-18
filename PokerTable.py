@@ -16,7 +16,6 @@ class PokerTable(object):
         self._pot = PokerPot()
         self._deck = Deck
         self._last_player_to_raise = None
-        self._ante_up()
         self._max_bet = 0
 
     @property
