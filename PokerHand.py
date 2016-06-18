@@ -1,4 +1,5 @@
 from enum import IntEnum
+
 from _ComparableMixin import ComparableMixin
 
 
@@ -106,7 +107,7 @@ class PokerHand(ComparableMixin):
 
     def __eq__(self, other):
         for i in range(0, 5):
-            if self._cards[i].face_value.value != other.cards.face_value.value:
+            if self._cards[i].face_value.value != other.cards[i].face_value.value:
                 return False
         return self.is_flush() == other.is_flush()
 

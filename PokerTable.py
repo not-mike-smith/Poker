@@ -1,7 +1,8 @@
-from Deck import Deck
 from abc import abstractmethod
-from PokerPot import PokerPot
+
 from BetAction import BetAction
+from Deck import Deck
+from PokerPot import PokerPot
 
 
 class PokerTable(object):
@@ -14,9 +15,10 @@ class PokerTable(object):
         self._ante = ante
         self._betting_player_index = 0
         self._pot = PokerPot()
-        self._deck = Deck
+        self._deck = Deck()
         self._last_player_to_raise = None
         self._max_bet = 0
+        self.subscriber = None
 
     @property
     def limit(self):
@@ -105,14 +107,15 @@ class PokerTable(object):
         self._reset_betting_order()
         while len(self._betting_players) > 1 and self.betting_player is not self._last_player_to_raise:
             self.betting_player.make_bet_action([act for act in BetAction])
-            self._advance_betting_player()
         if len(self._unfolded_players) == 1:
-            self._pot.award({self._unfolded_players[0]})
+            self._pot.award([{self._unfolded_players[0]}])
+            if self.subscriber is not None:
+                self.subscriber.players_win(self, [{self._unfolded_players[0]}])
             return False
         return True
 
     def _sort_hand_sets(self):
-        winners = sorted(self._unfolded_players, key=lambda p: p.best_hand, reversed=True)
+        winners = sorted(self._unfolded_players, key=lambda p: p.best_hand, reverse=True)
         ret = [{winners[0]}]  # list of sets
         hand = winners[0].best_hand
         ret_index = 0
@@ -125,3 +128,4 @@ class PokerTable(object):
                 hand = winners[i].best_hand
                 ret_index += 1
             i += 1
+        return ret

@@ -26,7 +26,7 @@ class _SubPot(object):
     def create_side_pot(self, all_in_player):
         side_pot = _SubPot()
         self.max_bet = self.bets[all_in_player]
-        new_bets = {player: self.bets[player] - self.max_bet for player in self.bets.keys}
+        new_bets = {player: self.bets[player] - self.max_bet for player in self.bets.keys()}
         for player, bet in self.bets.items():
             if new_bets[player] > 0:
                 side_pot.bet(player, new_bets[player])
@@ -54,17 +54,14 @@ class PokerPot(object):
                 amount -= sub_amount
                 if amount == 0:
                     return
-        try:
-            self._subpots[-1].bets[player] += amount
-        except KeyError:
-            self._subpots[-1].bets[player] = amount
+        self._subpots[-1].bet(player, amount)
 
     def all_in(self, broke_player):
         self._subpots.append(self._subpots[-1].create_side_pot(broke_player))
 
     def award(self, winner_sets):
         for pot in self._subpots:
-            betters = set(pot.bets.keys)
+            betters = set(pot.bets.keys())
             for potentials in winner_sets:
                 winners = betters & potentials
                 if len(winners) > 0:
@@ -74,7 +71,7 @@ class PokerPot(object):
     def winnable_pot(self, player):
         ret = 0
         for pot in self._subpots:
-            if player in pot.bets.keys:
+            if player in pot.bets.keys():
                 ret += pot.pot
             else:
                 break

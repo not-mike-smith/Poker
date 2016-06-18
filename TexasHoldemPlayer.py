@@ -1,4 +1,5 @@
 import itertools
+
 from PokerHand import PokerHand
 from PokerPlayer import PokerPlayer
 
@@ -8,7 +9,12 @@ class TexasHoldemPlayer(PokerPlayer):
         super(TexasHoldemPlayer, self).__init__()
 
     def make_bet_action(self, allowed_actions):
-        pass  # TODO: add Console UI here?
+        if self.decision_maker is None:
+            return
+        bet_action, amount = self.decision_maker.get_bet_action(self, allowed_actions, self.table)
+        if self.subscriber is not None:
+            self.subscriber.player_bets(self, bet_action, amount)
+        self.table.do_bet_action(self, bet_action, amount)
 
     @property
     def best_hand(self):
