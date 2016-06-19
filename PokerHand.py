@@ -40,11 +40,11 @@ class PokerHand(ComparableMixin):
         return self._cards_to_compare
 
     def __repr__(self):
-        return "(" + "{0}, {1}, {2}, {3}, {4}".format(self._cards[0],
-                                                      self._cards[1],
-                                                      self._cards[2],
-                                                      self._cards[3],
-                                                      self._cards[4]) + ")"
+        return "({0}, {1}, {2}, {3}, {4}".format(self._cards[0],
+                                                 self._cards[1],
+                                                 self._cards[2],
+                                                 self._cards[3],
+                                                 self._cards[4]) + ") " + self.hand_type.name
 
     def _get_hand_type(self):
         num_face_values = self._get_num_face_values()
@@ -124,15 +124,16 @@ class PokerHand(ComparableMixin):
         elif self.hand_type == HandType.Flush or self.hand_type == HandType.HighCard:
             return [card for card in reversed(self._cards)]
         # else:
-        singles = []
+        singles = [card for card in reversed(self._cards)]
         doubles = []
-        for i in range(3, -1, -1):
-            if self._cards[-1].face_value == self._cards[i+1].face_value:
-                doubles.append(self._cards[i])
+        i = 0
+        while i < len(singles)-1:
+            if singles[i].face_value == singles[i+1].face_value:
+                doubles.append(singles[i])
+                del singles[i]
+                del singles[i]
             else:
-                singles.append(self._cards[i+1])
-        if self._cards[0].face_value == self._cards[1].face_value:
-            singles.append(self._cards[0])
+                i += 1
         return doubles + singles
 
     def __hash__(self):

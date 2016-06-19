@@ -39,7 +39,7 @@ class ConsoleUi(PokerGameSubscriber, PokerDecisionMaker):
         return True
 
     def create_table(self):
-        limit = self.get_pos_int_from_user('Bet Limit: ', 'bet limit')
+        limit = self.get_pos_int_from_user('Bet Limit (0 for no limit): ', 'bet limit')
         if limit == 0:
             limit = None
         ante = self.get_pos_int_from_user('Ante (not including blinds): ', 'ante')
@@ -65,8 +65,7 @@ class ConsoleUi(PokerGameSubscriber, PokerDecisionMaker):
             msg = 'Tier: {'
             for winner in winner_set:
                 msg += '{0}'.format(winner.name)
-                if winner.best_hand is not None:
-                    msg += ' with {} {}'.format(winner.best_hand.hand_type.name, winner.best_hand)
+                msg += ' with {}'.format(winner.best_hand)
                 msg += ', '
             msg = msg[0:len(msg)-2]
             msg += '}'
@@ -96,7 +95,7 @@ class ConsoleUi(PokerGameSubscriber, PokerDecisionMaker):
         print('Private cards: {0}'.format(player.cards))
         print('Table cards: {0}'.format(table.table_cards))
         if player.best_hand is not None:
-            print('Best hand: {} {}'.format(player.best_hand.hand_type.name, player.best_hand))
+            print('Best hand: {}'.format(player.best_hand))
         action = None
         amount = None
         while action is None:

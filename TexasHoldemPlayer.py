@@ -25,9 +25,12 @@ class TexasHoldemPlayer(PokerPlayer):
         # only look at hand_type, not card values
         hands.sort(key=lambda h: h.hand_type.value, reverse=True)
         # throw out hands of lower valued hand_type
-        for i in range(len(hands)-1, 0, -1):
-            if hands[i].hand_type != hands[0].hand_type:
-                del hands[i]
+        contenders = []
+        for hand in hands:
+            if hand.hand_type == hands[0].hand_type:
+                contenders.append(hand)
+            else:
+                break
         # Sort hands by face_value and return best
-        hands.sort()
-        return hands[-1]
+        contenders.sort()
+        return contenders[-1]
