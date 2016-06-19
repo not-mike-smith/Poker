@@ -78,7 +78,7 @@ class PokerTable(object):
         return self._betting_players[self._betting_player_index]
 
     def winnable_pot(self, player):
-        self._pot.winnable_pot(player)
+        return self._pot.winnable_pot(player)
 
     def _advance_betting_player(self):
         self._betting_player_index = (self._betting_player_index + 1) % len(self._betting_players)
@@ -105,7 +105,12 @@ class PokerTable(object):
 
     def _betting_round_and_continue(self):
         self._reset_betting_order()
-        while len(self._betting_players) > 1 and self.betting_player is not self._last_player_to_raise:
+        self._last_player_to_raise = None
+        for player in self._betting_players:
+            self.betting_player.make_bet_action([act for act in BetAction])
+        while len(self._betting_players) > 1 and \
+                self._last_player_to_raise is not None and \
+                self._last_player_to_raise is not self.betting_player:
             self.betting_player.make_bet_action([act for act in BetAction])
         if len(self._unfolded_players) == 1:
             self._pot.award([{self._unfolded_players[0]}])

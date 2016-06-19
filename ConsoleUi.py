@@ -16,8 +16,6 @@ class ConsoleUi(PokerGameSubscriber, PokerDecisionMaker):
         if keep_playing:
             self.create_table()
             self.table.play()
-        # TODO
-        print(self.all_players)
 
     def create_players(self):
         name = None
