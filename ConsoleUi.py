@@ -59,19 +59,23 @@ class ConsoleUi(PokerGameSubscriber, PokerDecisionMaker):
         if amount < 0:
             verb = 'wins'
             amount *= -1
-        print('{0} {1} {2}, now has {3} chips'.format(player.name, verb, str(amount), player.stack))
+        print('\n{0} {1} {2}, now has {3} chips'.format(player.name, verb, str(amount), player.stack))
 
     def players_win(self, table, players):
+        print('\nGame over, players ranked by hand:')
         for winner_set in players:
             msg = 'Tier: {'
             for winner in winner_set:
-                msg += '{0} with {1}, '.format(winner.name, winner.best_hand)
-            msg = msg[0:len(msg)-3]
+                msg += '{0}'.format(winner.name)
+                if winner.best_hand is not None:
+                    msg += ' with {} {}'.format(winner.best_hand.hand_type.name, winner.best_hand)
+                msg += ', '
+            msg = msg[0:len(msg)-2]
             msg += '}'
             print(msg)
 
     def player_bets(self, player, bet_action, amount):
-        msg = player.name
+        msg = '\n' + player.name
         if bet_action == BetAction.Fold:
             msg += ' folded'
         elif bet_action == BetAction.Call:
@@ -81,13 +85,35 @@ class ConsoleUi(PokerGameSubscriber, PokerDecisionMaker):
         print(msg)
 
     def player_took_cards(self, player, cards):
-        print('{0} received {1}'.format(player.name, cards))
+        print('\n{0} received {1}'.format(player.name, cards))
 
     def table_cards_updated(self, table):
-        print('Cards on table are: {0}'.format(table.table_cards))
+        print('\nCards on table are: {0}'.format(table.table_cards))
 
     def get_bet_action(self, player, allowed_actions, table):
-        return BetAction.Call, None
+        print('\n{0} make a decision from {1}'.format(player.name, [act.name for act in allowed_actions]))
+        print('Sunk bet: {}    Cost to call: {}    Winnable pot: {}'.format(str(table.sunk_bets(player)),
+                                                                            str(table.cost_to_call(player)),
+                                                                            str(table.winnable_pot(player))))
+        print('Private cards: {0}'.format(player.cards))
+        print('Table cards: {0}'.format(table.table_cards))
+        if player.best_hand is not None:
+            print('Best hand: {} {}'.format(player.best_hand.hand_type.name, player.best_hand))
+        action = None
+        amount = None
+        while action is None:
+            action_str = input('Enter \'F\' to Fold, \'C\' to Call, or \'R\' to Raise: ').upper()
+            if action_str == 'F':
+                action = BetAction.Fold
+            elif action_str == 'C':
+                action = BetAction.Call
+            elif action_str == 'R':
+                action = BetAction.Raise
+            if action is None or action not in allowed_actions:
+                print('Invalid entry, try again')
+            if action is BetAction.Raise:
+                amount = self.get_pos_int_from_user('Amount: ', 'raise amount')
+        return action, amount
 
     @staticmethod
     def get_pos_int_from_user(input_text, value_name):

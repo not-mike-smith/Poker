@@ -17,6 +17,10 @@ class PokerPlayer(object):
         return self.name + ' has ' + str(self._stack) + ' chips'
 
     @property
+    def cards(self):
+        return self._cards.copy()
+
+    @property
     def best_hand(self):
         raise Exception('Must be overridden')
 
